@@ -9,7 +9,7 @@
         <insert tableName="departments">
             <column name="id" valueComputed="gen_random_uuid()"/>
             <column name="name" value="Cardiology"/>
-            <column name="is_active" valueBoolean="true"/>
+            <column name="active" valueBoolean="true"/>
             <column name="created_at" valueComputed="NOW()"/>
             <column name="updated_at" valueComputed="NOW()"/>
         </insert>
@@ -17,7 +17,7 @@
         <insert tableName="departments">
             <column name="id" valueComputed="gen_random_uuid()"/>
             <column name="name" value="Neurology"/>
-            <column name="is_active" valueBoolean="true"/>
+            <column name="active" valueBoolean="true"/>
             <column name="created_at" valueComputed="NOW()"/>
             <column name="updated_at" valueComputed="NOW()"/>
         </insert>
@@ -25,7 +25,7 @@
         <insert tableName="departments">
             <column name="id" valueComputed="gen_random_uuid()"/>
             <column name="name" value="Orthopedics"/>
-            <column name="is_active" valueBoolean="true"/>
+            <column name="active" valueBoolean="true"/>
             <column name="created_at" valueComputed="NOW()"/>
             <column name="updated_at" valueComputed="NOW()"/>
         </insert>
@@ -33,7 +33,7 @@
         <insert tableName="departments">
             <column name="id" valueComputed="gen_random_uuid()"/>
             <column name="name" value="Pediatrics"/>
-            <column name="is_active" valueBoolean="true"/>
+            <column name="active" valueBoolean="true"/>
             <column name="created_at" valueComputed="NOW()"/>
             <column name="updated_at" valueComputed="NOW()"/>
         </insert>
@@ -41,7 +41,7 @@
         <insert tableName="departments">
             <column name="id" valueComputed="gen_random_uuid()"/>
             <column name="name" value="General Medicine"/>
-            <column name="is_active" valueBoolean="true"/>
+            <column name="active" valueBoolean="true"/>
             <column name="created_at" valueComputed="NOW()"/>
             <column name="updated_at" valueComputed="NOW()"/>
         </insert>
