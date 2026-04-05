@@ -48,6 +48,17 @@ public class MedicalRecordController {
         return ResponseEntity.ok(ApiResponse.success("Medical records fetched successfully", records));
     }
 
+    // ✅ NEW
+    @GetMapping("/by-email")
+    public ResponseEntity<ApiResponse<Page<MedicalRecordResponse>>> getMedicalRecordsByEmail(
+            @RequestParam String email,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<MedicalRecordResponse> records = medicalRecordService.getByPatientEmail(email, page, size);
+        return ResponseEntity.ok(ApiResponse.success("Medical records fetched successfully", records));
+    }
+
     @PutMapping("/{id}/vitals")
     public ResponseEntity<ApiResponse<MedicalRecordResponse>> addVitals(
             @PathVariable UUID id,

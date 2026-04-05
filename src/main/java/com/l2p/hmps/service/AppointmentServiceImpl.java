@@ -1,18 +1,17 @@
 package com.l2p.hmps.service;
 
+import com.l2p.hmps.dto.AppointmentResponse;
 import com.l2p.hmps.dto.BookAppointmentRequest;
 import com.l2p.hmps.exception.AppointmentException;
 import com.l2p.hmps.mapper.AppointmentMapper;
-import com.l2p.hmps.model.Appointment;
-import com.l2p.hmps.model.AppointmentStatus;
-import com.l2p.hmps.model.User;
+import com.l2p.hmps.model.*;
 import com.l2p.hmps.repository.AppointmentRepository;
 import com.l2p.hmps.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,77 +23,97 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final UserRepository userRepository;
     private final AppointmentMapper appointmentMapper;
 
+    // 🔹 ENTITY METHODS
+
     @Override
-    @Transactional
     public Appointment bookAppointment(BookAppointmentRequest request) {
+
         User patient = userRepository.findById(request.getPatientId())
-                .orElseThrow(() -> new AppointmentException(
-                        "Patient not found",
-                        HttpStatus.NOT_FOUND,
-                        "APPT_404"
-                ));
+                .orElseThrow(() -> new AppointmentException("Patient not found", HttpStatus.NOT_FOUND, "APT_404"));
+
+        User doctor = userRepository.findById(request.getDoctorId())
+                .orElseThrow(() -> new AppointmentException("Doctor not found", HttpStatus.NOT_FOUND, "APT_404"));
+
+        if (appointmentRepository.existsByDoctorAndAppointmentDateAndSlotAndStatusNot(
+                doctor,
+                request.getAppointmentDate(),
+                request.getSlot(),
+                AppointmentStatus.CANCELLED
+        )) {
+            throw new AppointmentException("Slot already booked", HttpStatus.BAD_REQUEST, "APT_400");
+        }
 
         Appointment appointment = appointmentMapper.toEntity(request);
+
         appointment.setPatient(patient);
+        appointment.setDoctor(doctor);
+        appointment.setAppointmentTime(LocalTime.parse(request.getSlot().trim()));
+        appointment.setType(AppointmentType.valueOf(request.getType().toUpperCase()));
 
         return appointmentRepository.save(appointment);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Appointment getAppointmentById(UUID appointmentId) {
         return appointmentRepository.findById(appointmentId)
-                .orElseThrow(() -> new AppointmentException(
-                        "Appointment not found",
-                        HttpStatus.NOT_FOUND,
-                        "APPT_404"
-                ));
+                .orElseThrow(() -> new AppointmentException("Appointment not found", HttpStatus.NOT_FOUND, "APT_404"));
+    }
+
+    // ✅ NEW — Find user by email, then fetch their appointments
+    @Override
+    public List<Appointment> getAppointmentsByEmail(String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppointmentException("User not found with email: " + email, HttpStatus.NOT_FOUND, "APT_404"));
+
+        return appointmentRepository.findByPatient(user);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Appointment> getAppointmentsByPatient(UUID patientId) {
+
         User patient = userRepository.findById(patientId)
-                .orElseThrow(() -> new AppointmentException(
-                        "Patient not found",
-                        HttpStatus.NOT_FOUND,
-                        "APPT_404"
-                ));
+                .orElseThrow(() -> new AppointmentException("Patient not found", HttpStatus.NOT_FOUND, "APT_404"));
 
         return appointmentRepository.findByPatient(patient);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Appointment> getAppointmentsByDoctor(UUID doctorId) {
-        return appointmentRepository.findByDoctorId(doctorId);
+
+        User doctor = userRepository.findById(doctorId)
+                .orElseThrow(() -> new AppointmentException("Doctor not found", HttpStatus.NOT_FOUND, "APT_404"));
+
+        return appointmentRepository.findByDoctor(doctor);
     }
 
     @Override
-    @Transactional
     public Appointment cancelAppointment(UUID appointmentId) {
-        Appointment appointment = appointmentRepository.findById(appointmentId)
-                .orElseThrow(() -> new AppointmentException(
-                        "Appointment not found",
-                        HttpStatus.NOT_FOUND,
-                        "APPT_404"
-                ));
 
+        Appointment appointment = getAppointmentById(appointmentId);
         appointment.setStatus(AppointmentStatus.CANCELLED);
+
         return appointmentRepository.save(appointment);
     }
 
     @Override
-    @Transactional
     public Appointment updateAppointmentStatus(UUID appointmentId, AppointmentStatus status) {
-        Appointment appointment = appointmentRepository.findById(appointmentId)
-                .orElseThrow(() -> new AppointmentException(
-                        "Appointment not found",
-                        HttpStatus.NOT_FOUND,
-                        "APPT_404"
-                ));
 
+        Appointment appointment = getAppointmentById(appointmentId);
         appointment.setStatus(status);
+
         return appointmentRepository.save(appointment);
+    }
+
+    // 🔹 DTO METHODS (API)
+
+    @Override
+    public AppointmentResponse create(BookAppointmentRequest request) {
+        return appointmentMapper.toResponse(bookAppointment(request));
+    }
+
+    @Override
+    public AppointmentResponse getById(UUID id) {
+        return appointmentMapper.toResponse(getAppointmentById(id));
     }
 }

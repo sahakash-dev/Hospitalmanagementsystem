@@ -1,9 +1,9 @@
 package com.l2p.hmps.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,10 +11,8 @@ import java.time.LocalTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "appointments")
+@Table(name = "appointments") // ❌ No indexes here
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Appointment {
 
     @Id
@@ -29,6 +27,8 @@ public class Appointment {
     @JoinColumn(name = "doctor_id", nullable = false)
     private User doctor;
 
+    @NotNull
+    @FutureOrPresent
     @Column(name = "appointment_date", nullable = false)
     private LocalDate appointmentDate;
 
@@ -38,19 +38,43 @@ public class Appointment {
     @Column(nullable = false)
     private String slot;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AppointmentType type;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private AppointmentStatus status = AppointmentStatus.PENDING;
+    private AppointmentStatus status;
 
+    @Column(columnDefinition = "TEXT")
     private String reason;
 
-    @Column(name = "created_at")
+    @Column(columnDefinition = "TEXT")
+    private String notes;
+
+    @Column(name = "cancellation_reason", columnDefinition = "TEXT")
+    private String cancellationReason;
+
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
+    @Column(nullable = false)
     private LocalDateTime updatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+        updatedAt = createdAt;
+
+        if (status == null) {
+            status = AppointmentStatus.PENDING;
+        }
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }

@@ -10,6 +10,7 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface MedicalRecordMapper {
 
+    // 🔹 Create Mapping
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "patient", ignore = true)
     @Mapping(target = "doctor", ignore = true)
@@ -18,8 +19,9 @@ public interface MedicalRecordMapper {
     @Mapping(target = "updatedAt", ignore = true)
     MedicalRecord toEntity(CreateMedicalRecordRequest request);
 
+    // 🔹 Response Mapping
     @Mapping(source = "patient.id", target = "patientId")
     @Mapping(source = "doctor.id", target = "doctorId")
-    @Mapping(source = "appointment.id", target = "appointmentId")
+    @Mapping(source = "appointment.id", target = "appointmentId", defaultExpression = "java(null)")
     MedicalRecordResponse toResponse(MedicalRecord medicalRecord);
 }

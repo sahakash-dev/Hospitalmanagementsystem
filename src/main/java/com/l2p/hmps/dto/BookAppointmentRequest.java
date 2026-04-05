@@ -1,14 +1,9 @@
 package com.l2p.hmps.dto;
 
-import com.l2p.hmps.model.AppointmentType;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.UUID;
 
 @Data
@@ -17,23 +12,19 @@ public class BookAppointmentRequest {
     @NotNull(message = "Patient id is required")
     private UUID patientId;
 
-//    @NotNull(message = "Doctor id is required")
-//    private UUID doctorId;
+    @NotNull(message = "Doctor id is required")
+    private UUID doctorId;
 
     @NotNull(message = "Appointment date is required")
-    @FutureOrPresent(message = "Appointment date must be today or in the future")
+    @FutureOrPresent(message = "Appointment date cannot be in the past")
     private LocalDate appointmentDate;
 
-    @NotNull(message = "Appointment time is required")
-    private LocalTime appointmentTime;
-
     @NotBlank(message = "Slot is required")
-    @Size(max = 100, message = "Slot cannot exceed 100 characters")
-    private String slot;
+    private String slot; // e.g. "09:00"
 
-    @NotNull(message = "Appointment type is required")
-    private AppointmentType type;
+    @NotBlank(message = "Appointment type is required")
+    private String type; // IN_PERSON | VIDEO | PHONE
 
-    @Size(max = 255, message = "Reason cannot exceed 255 characters")
+    @Size(max = 1000, message = "Reason cannot exceed 1000 characters")
     private String reason;
 }
