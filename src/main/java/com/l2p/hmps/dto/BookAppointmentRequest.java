@@ -20,6 +20,7 @@ public class BookAppointmentRequest {
     private LocalDate appointmentDate;
 
     @NotBlank(message = "Slot is required")
+    @Pattern(regexp = "^([01]?[0-9]|2[0-3]):[0-5][0-9]$", message = "Slot must be in HH:mm format")
     private String slot; // e.g. "09:00"
 
     @NotBlank(message = "Appointment type is required")

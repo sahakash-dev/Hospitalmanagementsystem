@@ -20,11 +20,10 @@
             </column>
 
             <column name="patient_id" type="UUID">
-                <constraints nullable="false"/>
+                <constraints nullable="false" foreignKeyName="fk_appointment_patient" references="users(id)"/>
             </column>
 
             <column name="doctor_id" type="UUID">
-                <constraints nullable="false"/>
                 <constraints nullable="false" foreignKeyName="fk_appointment_doctor" references="users(id)"/>
             </column>
 
@@ -40,6 +39,7 @@
                 <constraints nullable="false"/>
             </column>
 
+
             <column name="type" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
@@ -48,32 +48,14 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="reason" type="TEXT"/>
             <column name="notes" type="TEXT"/>
+            <column name="reason" type="VARCHAR(255)"/>
             <column name="cancellation_reason" type="TEXT"/>
 
-            <column name="created_at" type="TIMESTAMP">
-                <constraints nullable="false"/>
-            </column>
-
-            <column name="updated_at" type="TIMESTAMP">
-                <constraints nullable="false"/>
-            </column>
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP"/>
 
         </createTable>
-        <addForeignKeyConstraint
-                baseTableName="appointments"
-                baseColumnNames="patient_id"
-                referencedTableName="users"
-                referencedColumnNames="id"
-                constraintName="fk_appointment_patient"/>
-
-        <addForeignKeyConstraint
-                baseTableName="appointments"
-                baseColumnNames="doctor_id"
-                referencedTableName="users"
-                referencedColumnNames="id"
-                constraintName="fk_appointment_doctor"/>
 
         <createIndex indexName="idx_appointment_patient" tableName="appointments">
             <column name="patient_id"/>
