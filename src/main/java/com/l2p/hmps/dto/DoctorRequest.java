@@ -2,18 +2,16 @@ package com.l2p.hmps.dto;
 
 import java.math.BigDecimal;
 import java.util.UUID;
-
 import jakarta.validation.constraints.*;
-
 import lombok.Data;
 
 @Data
-public class DoctorDTO {
+public class DoctorRequest {
 
-    private UUID id;
-
+    @NotNull(message = "User ID is required")
     private UUID userId;
 
+    @NotNull(message = "Department ID is required")
     private UUID departmentId;
 
     @NotBlank(message = "License number is required")
@@ -32,6 +30,7 @@ public class DoctorDTO {
     private String specialization;
 
     @Min(value = 0, message = "Experience cannot be negative")
+    @NotNull(message = "years of experience is required")
     private int yearsExperience;
 
     @DecimalMin(value = "0.0", message = "Rating cannot be negative")

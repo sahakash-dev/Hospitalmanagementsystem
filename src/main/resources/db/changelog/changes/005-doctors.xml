@@ -40,7 +40,7 @@
 
             <column name="bio" type="TEXT"/>
 
-            <column name="is_active" type="BOOLEAN" defaultValueBoolean="true"/>
+            <column name="active" type="BOOLEAN" defaultValueBoolean="true"/>
 
             <column name="created_at" type="TIMESTAMP"/>
             <column name="updated_at" type="TIMESTAMP"/>

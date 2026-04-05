@@ -33,7 +33,7 @@ public class Department {
     @Column(name = "head_doctor_id")
     private UUID headDoctorId;
 
-    private boolean isActive = true;
+    private boolean active = true;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
