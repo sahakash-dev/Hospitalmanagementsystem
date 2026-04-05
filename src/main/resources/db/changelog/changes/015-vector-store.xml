@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="015-setup-vector-store-v2" author="RajKumar">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="vector_store"/>
+        </preConditions>
+        <sql>
+            DROP TABLE IF EXISTS vector_store;
+        </sql>
+    </changeSet>
+
+    <changeSet id="016-create-vector-store-local" author="RajKumar">
+        <sql>
+            -- Extension ensure karna
+            CREATE EXTENSION IF NOT EXISTS vector;
+
+            -- Nayi table 384 dimensions ke saath (Local Transformers ke liye)
+            CREATE TABLE vector_store (
+                id UUID PRIMARY KEY,
+                content TEXT,
+                metadata JSONB,
+                embedding vector(384) 
+            );
+
+            -- HNSW Index for fast search
+            CREATE INDEX IF NOT EXISTS vector_store_hnsw_idx 
+            ON vector_store USING hnsw (embedding vector_cosine_ops);
+        </sql>
+        <rollback>
+            <sql>
+                DROP TABLE IF EXISTS vector_store;
+            </sql>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

@@ -58,9 +58,9 @@
             <column name="patient_id"/>
         </createIndex>
 
-        <!--        <createIndex indexName="idx_appointment_doctor" tableName="appointments">
-                    <column name="doctor_id"/>
-                </createIndex>-->
+        <createIndex indexName="idx_appointment_doctor" tableName="appointments">
+            <column name="doctor_id"/>
+        </createIndex>
 
     </changeSet>
 
