@@ -58,6 +58,10 @@ public class DoctorServiceImp implements DoctorService {
 
         if (request.getDepartmentId() != null) {
             Department dept = departmentRepository.findById(request.getDepartmentId())
+
+
+        if (doctorDTO.getDepartmentId() != null) {
+            Department dept = departmentRepository.findById(doctorDTO.getDepartmentId())
                     .orElseThrow(() -> new DoctorException(
                             "Department not found with id: " + request.getDepartmentId(),
                             HttpStatus.NOT_FOUND,
