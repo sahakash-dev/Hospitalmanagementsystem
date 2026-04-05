@@ -1,0 +1,51 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="013-create-notifications" author="dev4">
+
+        <createTable tableName="notifications">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="message" type="TEXT"/>
+
+            <column name="type" type="VARCHAR(50)"/>
+            <column name="is_read" type="BOOLEAN" defaultValueBoolean="false"/>
+
+            <column name="sent_at" type="TIMESTAMP"/>
+        </createTable>
+
+        <!-- FK -->
+        <addForeignKeyConstraint
+                baseTableName="notifications"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_notifications_user"
+                onDelete="CASCADE"/>
+
+        <!-- Index: (user_id, is_read) -->
+        <createIndex indexName="idx_notifications_user_read"
+                     tableName="notifications">
+            <column name="user_id"/>
+            <column name="is_read"/>
+        </createIndex>
+
+        <!-- Index: sent_at DESC -->
+        <createIndex indexName="idx_notifications_sent_at"
+                     tableName="notifications">
+            <column name="sent_at"/>
+        </createIndex>
+
+    </changeSet>
+
+</databaseChangeLog>

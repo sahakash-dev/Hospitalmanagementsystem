@@ -5,15 +5,27 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
+<!--    <include file="db/changelog/changes/001-users.xml"/>-->
+<!--    <include file="db/changelog/changes/002-refresh-tokens.xml"/>-->
+<!--    <include file="db/changelog/changes/004-patients.xml"/>-->
+<!--    <include file="db/changelog/changes/007-appointments.xml"/>-->
+
     <include file="db/changelog/changes/001-users.xml"/>
     <include file="db/changelog/changes/002-refresh-tokens.xml"/>
+
     <include file="db/changelog/changes/003-departments.xml"/>
     <include file="db/changelog/changes/004-patients.xml"/>
     <include file="db/changelog/changes/005-doctors.xml"/>
+
     <include file="db/changelog/changes/006-doctor-schedules.xml"/>
     <include file="db/changelog/changes/007-appointments.xml"/>
     <include file="db/changelog/changes/008-medical-records.xml"/>
     <include file="db/changelog/changes/009-prescriptions.xml"/>
     <include file="db/changelog/changes/015-vector-store.xml"/>
+
+    <include file="db/changelog/changes/013-notifications.xml"/>
+    <include file="db/changelog/changes/014-audit-logs.xml"/>
+    <include file="db/changelog/changes/016-seed-data.xml"/>
+
 
 </databaseChangeLog>

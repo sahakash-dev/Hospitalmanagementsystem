@@ -63,6 +63,8 @@ public class DoctorServiceImp implements DoctorService {
 
         doctor.setUser(user);
 
+
+
         if (doctorDTO.getDepartmentId() != null) {
             Department dept = departmentRepository.findById(doctorDTO.getDepartmentId())
                     .orElseThrow(() -> new DoctorException(
