@@ -8,5 +8,6 @@ import com.l2p.hmps.model.Doctor;
 
 public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
     List<Doctor> findByDepartment_Id(UUID departmentId);
+    Optional<Doctor> findByUser_Email(String email);
 
 }

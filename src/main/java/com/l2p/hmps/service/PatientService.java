@@ -2,22 +2,21 @@ package com.l2p.hmps.service;
 
 import java.util.UUID;
 
+import com.l2p.hmps.dto.PatientRequest;
+import com.l2p.hmps.dto.PatientResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.l2p.hmps.dto.PatientDTO;
-
 public interface PatientService {
 
-    PatientDTO register(PatientDTO patientDTO);
+    PatientResponse register(PatientRequest request);
+    PatientResponse getByUserId(UUID userId);
+    Page<PatientResponse> getAll(Pageable pageable);
+    Page<PatientResponse> search(String q, Pageable pageable);
+    PatientResponse update(UUID id, PatientRequest request);
 
-    PatientDTO getByUserId(UUID userId);
-
-    Page<PatientDTO> getAll(Pageable pageable);
-
-    Page<PatientDTO> search(String q, Pageable pageable);
-
-    PatientDTO update(UUID id, PatientDTO patientDTO);
+    // ================= UPDATE =================
+    PatientResponse update(PatientRequest request);
 
     void delete(UUID id);
 }

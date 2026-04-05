@@ -39,6 +39,7 @@
                 <constraints nullable="false"/>
             </column>
 
+
             <column name="type" type="VARCHAR(50)">
                 <constraints nullable="false"/>
             </column>
@@ -47,7 +48,9 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column name="notes" type="TEXT"/>
             <column name="reason" type="VARCHAR(255)"/>
+            <column name="cancellation_reason" type="TEXT"/>
 
             <column name="created_at" type="TIMESTAMP"/>
             <column name="updated_at" type="TIMESTAMP"/>

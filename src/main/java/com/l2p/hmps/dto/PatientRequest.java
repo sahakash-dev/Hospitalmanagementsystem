@@ -1,24 +1,13 @@
 package com.l2p.hmps.dto;
 
 import java.time.LocalDate;
-import java.util.UUID;
-
 import com.l2p.hmps.model.BloodGroup;
 import com.l2p.hmps.model.Gender;
-
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
-public class PatientDTO {
-
-    private UUID id;
-
-    private UUID userId;
+public class PatientRequest {
 
     private String nhsId;
 
@@ -31,6 +20,7 @@ public class PatientDTO {
     private String lastName;
 
     @Past(message = "Date of birth must be in the past")
+    @NotNull(message = "Date of birth is required")
     private LocalDate dateOfBirth;
 
     @NotNull(message = "Gender is required")
@@ -51,5 +41,4 @@ public class PatientDTO {
 
     @Size(max = 255, message = "Insurance info too long")
     private String insuranceInfo;
-
 }

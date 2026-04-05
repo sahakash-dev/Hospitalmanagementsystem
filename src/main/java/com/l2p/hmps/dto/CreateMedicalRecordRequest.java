@@ -17,7 +17,7 @@ public class CreateMedicalRecordRequest {
 
     private UUID appointmentId;
 
-    @PastOrPresent(message = "Visit date cannot be in the future")
+    @Future(message = "Follow-up date must be in the future")
     private LocalDate visitDate;
 
     @Size(max = 1000, message = "Chief complaint cannot exceed 1000 characters")

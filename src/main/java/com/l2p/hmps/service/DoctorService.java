@@ -1,30 +1,23 @@
 package com.l2p.hmps.service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
-
-import com.l2p.hmps.dto.DepartmentDTO;
-import com.l2p.hmps.dto.DoctorDTO;
-import com.l2p.hmps.dto.DoctorScheduleDTO;
+import com.l2p.hmps.dto.DoctorRequest;
+import com.l2p.hmps.dto.DoctorResponse;
+import com.l2p.hmps.dto.DoctorDashboardResponse;
 
 public interface DoctorService {
 
-    // Register doctor (creates user + doctor)
-    DoctorDTO register(DoctorDTO doctorDTO);    // Get all doctors with pagination\n    Page<DoctorDTO> getAll(Pageable pageable);\n\n    // Get doctor by ID\n    DoctorDTO getById(UUID id);
-
-    // Get available slots for a doctor on a specific date
-    List<String> getAvailableSlots(UUID doctorId, LocalDate date);
-
-    // Set doctor schedule
-    void setSchedule(UUID doctorId, List<DoctorScheduleDTO> schedules);
+    // Register doctor
+    DoctorResponse register(DoctorRequest request);
 
     // Dashboard data
-    Object getDashboard(UUID doctorId);
+    DoctorDashboardResponse getDashboard();
 
-    // Assign head doctor
-    DepartmentDTO assignHeadDoctor(UUID deptId, UUID doctorId);
+    DoctorResponse getMyProfile();
+
+    DoctorResponse getByEmail(String email);
 
     // Get all doctors in a department
-    List<DoctorDTO> getDoctors(UUID deptId);
+    List<DoctorResponse> getDoctorsByDepartment(UUID deptId);
 }

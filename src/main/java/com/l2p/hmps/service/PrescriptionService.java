@@ -10,6 +10,11 @@ public interface PrescriptionService {
     PrescriptionResponse create(CreatePrescriptionRequest request);
     List<PrescriptionResponse> getByPatient(UUID patientId);
     List<PrescriptionResponse> getActiveByPatient(UUID patientId);
+
+    // ✅ NEW
+    List<PrescriptionResponse> getByPatientEmail(String email);
+    List<PrescriptionResponse> getActiveByPatientEmail(String email);
+
     void revoke(UUID id, UUID doctorId);
     PrescriptionResponse markFilled(UUID id, UUID pharmacistId);
     byte[] generatePdf(UUID id);

@@ -102,6 +102,38 @@ public class PrescriptionServiceImpl implements PrescriptionService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<PrescriptionResponse> getByPatientEmail(String email) {
+        User patient = userRepository.findByEmail(email)
+                .orElseThrow(() -> new PrescriptionException(
+                        "Patient not found with email: " + email,
+                        HttpStatus.NOT_FOUND,
+                        "RX_404"
+                ));
+
+        return prescriptionRepository.findByPatient(patient)
+                .stream()
+                .map(prescriptionMapper::toResponse)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PrescriptionResponse> getActiveByPatientEmail(String email) {
+        User patient = userRepository.findByEmail(email)
+                .orElseThrow(() -> new PrescriptionException(
+                        "Patient not found with email: " + email,
+                        HttpStatus.NOT_FOUND,
+                        "RX_404"
+                ));
+
+        return prescriptionRepository.findByPatientAndIsActiveTrue(patient)
+                .stream()
+                .map(prescriptionMapper::toResponse)
+                .toList();
+    }
+
+    @Override
     @Transactional
     public void revoke(UUID id, UUID doctorId) {
         Prescription prescription = prescriptionRepository.findById(id)

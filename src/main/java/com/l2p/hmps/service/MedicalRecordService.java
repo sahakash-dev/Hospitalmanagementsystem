@@ -11,6 +11,7 @@ public interface MedicalRecordService {
     MedicalRecordResponse create(CreateMedicalRecordRequest request);
     MedicalRecordResponse getById(UUID id);
     Page<MedicalRecordResponse> getByPatient(UUID patientId, int page, int size);
+    Page<MedicalRecordResponse> getByPatientEmail(String email, int page, int size);
     MedicalRecordResponse addVitals(UUID id, VitalsRequest request);
     byte[] exportToPdf(UUID id);
 }

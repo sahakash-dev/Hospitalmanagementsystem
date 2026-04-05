@@ -47,6 +47,24 @@ public class PrescriptionController {
         return ResponseEntity.ok(ApiResponse.success("Active prescriptions fetched successfully", prescriptions));
     }
 
+    // ✅ NEW
+    @GetMapping("/by-email")
+    public ResponseEntity<ApiResponse<List<PrescriptionResponse>>> getPrescriptionsByEmail(
+            @RequestParam String email
+    ) {
+        List<PrescriptionResponse> prescriptions = prescriptionService.getByPatientEmail(email);
+        return ResponseEntity.ok(ApiResponse.success("Prescriptions fetched successfully", prescriptions));
+    }
+
+    // ✅ NEW
+    @GetMapping("/by-email/active")
+    public ResponseEntity<ApiResponse<List<PrescriptionResponse>>> getActivePrescriptionsByEmail(
+            @RequestParam String email
+    ) {
+        List<PrescriptionResponse> prescriptions = prescriptionService.getActiveByPatientEmail(email);
+        return ResponseEntity.ok(ApiResponse.success("Active prescriptions fetched successfully", prescriptions));
+    }
+
     @PutMapping("/{id}/fill")
     public ResponseEntity<ApiResponse<PrescriptionResponse>> markPrescriptionFilled(
             @PathVariable UUID id,
