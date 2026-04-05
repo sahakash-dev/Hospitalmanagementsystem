@@ -1,0 +1,12 @@
+package com.l2p.hmps.model;
+
+public enum NotificationType {
+    APPOINTMENT_BOOKED,
+    APPOINTMENT_REMINDER,
+    LAB_RESULT_READY,
+    CRITICAL_LAB_ALERT,
+    PRESCRIPTION_READY,
+    BILL_GENERATED,
+    PAYMENT_RECEIVED,
+    GENERAL
+}

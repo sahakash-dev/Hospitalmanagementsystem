@@ -1,27 +1,25 @@
 package com.l2p.hmps.service;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.l2p.hmps.dto.DoctorDashboardResponse;
+import com.l2p.hmps.dto.DoctorRequest;
+import com.l2p.hmps.dto.DoctorResponse;
 import com.l2p.hmps.model.Department;
 import com.l2p.hmps.model.Doctor;
-import com.l2p.hmps.model.DoctorSchedule;
 import com.l2p.hmps.model.User;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.l2p.hmps.dto.DoctorDTO;
-import com.l2p.hmps.dto.DoctorScheduleDTO;
-import com.l2p.hmps.dto.DepartmentDTO;
 import com.l2p.hmps.exception.DoctorException;
 import com.l2p.hmps.mapper.DoctorMapper;
-import com.l2p.hmps.mapper.DoctorScheduleMapper;
-import com.l2p.hmps.mapper.DepartmentMapper;
 import com.l2p.hmps.repository.DoctorRepository;
-import com.l2p.hmps.repository.DoctorScheduleRepository;
 import com.l2p.hmps.repository.DepartmentRepository;
 import com.l2p.hmps.repository.UserRepository;
 
@@ -32,9 +30,6 @@ public class DoctorServiceImp implements DoctorService {
     private DoctorRepository doctorRepository;
 
     @Autowired
-    private DoctorScheduleRepository doctorScheduleRepository;
-
-    @Autowired
     private DepartmentRepository departmentRepository;
 
     @Autowired
@@ -43,30 +38,32 @@ public class DoctorServiceImp implements DoctorService {
     @Autowired
     private DoctorMapper doctorMapper;
 
-    @Autowired
-    private DoctorScheduleMapper scheduleMapper;
+    private User getCurrentUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-    @Autowired
-    private DepartmentMapper departmentMapper;
+        return userRepository.findByEmail(email).orElseThrow(() -> new DoctorException(
+                "User not found",
+                HttpStatus.NOT_FOUND,
+                "USER_404"
+        ));
+    }
 
-    // ================= REGISTER =================
     @Override
-    public DoctorDTO register(DoctorDTO doctorDTO) {
+    public DoctorResponse register(DoctorRequest request) {
 
-        Doctor doctor = doctorMapper.toEntity(doctorDTO);
+        User user = getCurrentUser();
 
-        User user = userRepository.findById(doctorDTO.getUserId())
-                .orElseThrow(() -> new DoctorException(
-                        "User not found with id: " + doctorDTO.getUserId(),
-                        HttpStatus.NOT_FOUND,
-                        "DOCTOR_404"));
-
+        Doctor doctor = doctorMapper.toEntity(request);
         doctor.setUser(user);
+
+        if (request.getDepartmentId() != null) {
+            Department dept = departmentRepository.findById(request.getDepartmentId())
+
 
         if (doctorDTO.getDepartmentId() != null) {
             Department dept = departmentRepository.findById(doctorDTO.getDepartmentId())
                     .orElseThrow(() -> new DoctorException(
-                            "Department not found with id: " + doctorDTO.getDepartmentId(),
+                            "Department not found with id: " + request.getDepartmentId(),
                             HttpStatus.NOT_FOUND,
                             "DEPT_404"));
 
@@ -74,90 +71,67 @@ public class DoctorServiceImp implements DoctorService {
         }
 
         Doctor savedDoctor = doctorRepository.save(doctor);
-
-        return doctorMapper.toDTO(savedDoctor);
+        return doctorMapper.toResponse(savedDoctor);
     }
 
-    // ================= AVAILABLE SLOTS =================
     @Override
-    public List<String> getAvailableSlots(UUID doctorId, LocalDate date) {
+    public DoctorDashboardResponse getDashboard() {
 
-        List<DoctorSchedule> schedules = doctorScheduleRepository.findByDoctor_Id(doctorId);
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
 
-        // Simplified: just return time ranges (you can enhance later)
-        return schedules.stream()
-                .map(s -> s.getStartTime() + " - " + s.getEndTime())
-                .collect(Collectors.toList());
-    }
-
-    // ================= SET SCHEDULE =================
-    @Override
-    public void setSchedule(UUID doctorId, List<DoctorScheduleDTO> schedules) {
-
-        Doctor doctor = doctorRepository.findById(doctorId)
+        Doctor doctor = doctorRepository.findByUser_Email(email)
                 .orElseThrow(() -> new DoctorException(
-                        "Doctor not found with id: " + doctorId,
+                        "Doctor not found",
+                        HttpStatus.NOT_FOUND,
+                        "DOCTOR_404"
+                ));
+
+        return DoctorDashboardResponse.builder()
+                .totalPatientsCount(0L)
+                .pendingRecordsCount(0L)
+                .averageRating(
+                        doctor.getRating() != null ? doctor.getRating() : BigDecimal.ZERO
+                )
+                .upcomingAppointments(List.of())
+                .build();
+    }
+
+    @Override
+    public DoctorResponse getByEmail(String email) {
+        Doctor doctor = doctorRepository.findByUser_Email(email)
+                .orElseThrow(() -> new DoctorException(
+                        "Doctor not found",
                         HttpStatus.NOT_FOUND,
                         "DOCTOR_404"));
-
-        // delete old
-        doctorScheduleRepository.deleteByDoctor_Id(doctorId);
-
-        // save new
-        List<DoctorSchedule> newSchedules = schedules.stream().map(dto -> {
-            DoctorSchedule schedule = scheduleMapper.toEntity(dto);
-            schedule.setDoctor(doctor);
-            return schedule;
-        }).collect(Collectors.toList());
-
-        doctorScheduleRepository.saveAll(newSchedules);
+        return doctorMapper.toResponse(doctor);
     }
 
-    // ================= DASHBOARD =================
     @Override
-    public Object getDashboard(UUID doctorId) {
+    public DoctorResponse getMyProfile() {
 
-        // Placeholder (you will implement later)
-        return "Dashboard data for doctor: " + doctorId;
-    }
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
 
-    // ================= ASSIGN HEAD DOCTOR =================
-    @Override
-    public DepartmentDTO assignHeadDoctor(UUID deptId, UUID doctorId) {
-
-        Department dept = departmentRepository.findById(deptId)
+        Doctor doctor = doctorRepository.findByUser_Email(email)
                 .orElseThrow(() -> new DoctorException(
-                        "Department not found with id: " + deptId,
+                        "Doctor not found",
                         HttpStatus.NOT_FOUND,
-                        "DEPT_404"));
+                        "DOCTOR_404"
+                ));
 
-        Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(() -> new DoctorException(
-                        "Doctor not found with id: " + doctorId,
-                        HttpStatus.NOT_FOUND,
-                        "DOCTOR_404"));
-
-        if (doctor.getDepartment() == null || !doctor.getDepartment().getId().equals(deptId)) {
-            throw new DoctorException(
-                    "Doctor does not belong to this department",
-                    HttpStatus.BAD_REQUEST,
-                    "INVALID_DEPARTMENT");
-        }
-
-        dept.setHeadDoctorId(doctorId);
-        Department saved = departmentRepository.save(dept);
-
-        return departmentMapper.toDTO(saved);
+        return doctorMapper.toResponse(doctor);
     }
 
-    // ================= GET DOCTORS BY DEPARTMENT =================
     @Override
-    public List<DoctorDTO> getDoctors(UUID deptId) {
+    public List<DoctorResponse> getDoctorsByDepartment(UUID deptId) {
 
         List<Doctor> doctors = doctorRepository.findByDepartment_Id(deptId);
 
         return doctors.stream()
-                .map(doctorMapper::toDTO)
+                .map(doctorMapper::toResponse)
                 .collect(Collectors.toList());
     }
 }

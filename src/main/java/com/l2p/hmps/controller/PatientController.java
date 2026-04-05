@@ -13,7 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import com.l2p.hmps.dto.ApiResponse;
-import com.l2p.hmps.dto.PatientDTO;
+import com.l2p.hmps.dto.PatientRequest;
+import com.l2p.hmps.dto.PatientResponse;
 import com.l2p.hmps.service.PatientService;
 
 import jakarta.validation.Valid;
@@ -25,12 +26,11 @@ import lombok.RequiredArgsConstructor;
 public class PatientController {
 
     private final PatientService patientService;
-
     private final UserRepository userRepository;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<PatientDTO>> register(@Valid @RequestBody PatientDTO dto) {
-        PatientDTO patient = patientService.register(dto);
+    public ResponseEntity<ApiResponse<PatientResponse>> register(@Valid @RequestBody PatientRequest request) {
+        PatientResponse patient = patientService.register(request);
         return new ResponseEntity<>(
                 ApiResponse.success("Patient registered successfully", patient),
                 HttpStatus.CREATED
@@ -39,8 +39,8 @@ public class PatientController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','DOCTOR','RECEPTIONIST')")
-    public ResponseEntity<ApiResponse<Page<PatientDTO>>> getAll(Pageable pageable) {
-        Page<PatientDTO> patients = patientService.getAll(pageable);
+    public ResponseEntity<ApiResponse<Page<PatientResponse>>> getAll(Pageable pageable) {
+        Page<PatientResponse> patients = patientService.getAll(pageable);
         return ResponseEntity.ok(
                 ApiResponse.success("Patients fetched successfully", patients)
         );
@@ -48,11 +48,11 @@ public class PatientController {
 
     @GetMapping("/search")
     @PreAuthorize("hasAnyRole('ADMIN','DOCTOR','RECEPTIONIST')")
-    public ResponseEntity<ApiResponse<Page<PatientDTO>>> search(
+    public ResponseEntity<ApiResponse<Page<PatientResponse>>> search(
             @RequestParam String q,
             Pageable pageable) {
 
-        Page<PatientDTO> result = patientService.search(q, pageable);
+        Page<PatientResponse> result = patientService.search(q, pageable);
 
         return ResponseEntity.ok(
                 ApiResponse.success("Search results fetched", result)
@@ -61,26 +61,30 @@ public class PatientController {
 
     @GetMapping("/me")
     @PreAuthorize("hasRole('PATIENT')")
-    public ResponseEntity<ApiResponse<PatientDTO>> getMyProfile(Authentication authentication) {
+    public ResponseEntity<ApiResponse<PatientResponse>> getMyProfile(Authentication authentication) {
         String email = authentication.getName();
 
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
-        PatientDTO patient = patientService.getByUserId(user.getId());
+        PatientResponse patient = patientService.getByUserId(user.getId());
         return ResponseEntity.ok(ApiResponse.success("Patient profile fetched", patient));
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','DOCTOR','RECEPTIONIST')")
-    public ResponseEntity<ApiResponse<PatientDTO>> getById(@PathVariable UUID id) {
-        PatientDTO patient = patientService.getByUserId(id);
+    public ResponseEntity<ApiResponse<PatientResponse>> getById(@PathVariable UUID id) {
+        PatientResponse patient = patientService.getByUserId(id);
         return ResponseEntity.ok(ApiResponse.success("Patient fetched successfully", patient));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','PATIENT')")
-    public ResponseEntity<ApiResponse<PatientDTO>> update(@PathVariable UUID id, @Valid @RequestBody PatientDTO dto) {
-        PatientDTO updated = patientService.update(id, dto);
+    public ResponseEntity<ApiResponse<PatientResponse>> update(
+            @PathVariable UUID id,
+            @Valid @RequestBody PatientRequest request,
+            Authentication authentication) {
+
+        PatientResponse updated = patientService.update(id, request);
         return ResponseEntity.ok(ApiResponse.success("Patient updated successfully", updated));
     }
 

@@ -32,6 +32,9 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column name="is_active" type="BOOLEAN" defaultValueBoolean="true"/>
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP"/>
         </createTable>
 
     </changeSet>

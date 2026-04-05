@@ -54,7 +54,7 @@ public class Doctor {
     @Column(columnDefinition = "TEXT")
     private String bio;
 
-    private boolean isActive = true;
+    private boolean active = true;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

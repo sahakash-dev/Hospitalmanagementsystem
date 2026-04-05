@@ -1,0 +1,67 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="016-seed-data" author="dev4">
+
+        <!-- 🔹 Departments -->
+        <insert tableName="departments">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="name" value="Cardiology"/>
+        </insert>
+
+        <insert tableName="departments">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="name" value="Neurology"/>
+        </insert>
+
+        <insert tableName="departments">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="name" value="Orthopedics"/>
+        </insert>
+
+        <insert tableName="departments">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="name" value="Pediatrics"/>
+        </insert>
+
+        <insert tableName="departments">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="name" value="General Medicine"/>
+        </insert>
+
+
+        <!-- 🔹 ADMIN USER -->
+        <insert tableName="users">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="email" value="admin@hpms.in"/>
+            <column name="password" value="$2a$10$7QJ3Y7wG5yFQ4c8jYkZ4sO7wPqY6u9YQnXQ8uQx1XyZ1XyZ1XyZ1"/> <!-- BCrypt -->
+            <column name="role" value="ADMIN"/>
+            <column name="is_active" valueBoolean="true"/>
+        </insert>
+
+
+        <!-- 🔹 DOCTOR -->
+        <insert tableName="users">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="email" value="doctor@hpms.in"/>
+            <column name="password" value="$2a$10$7QJ3Y7wG5yFQ4c8jYkZ4sO7wPqY6u9YQnXQ8uQx1XyZ1XyZ1XyZ1"/>
+            <column name="role" value="DOCTOR"/>
+            <column name="is_active" valueBoolean="true"/>
+        </insert>
+
+
+        <!-- 🔹 PATIENT -->
+        <insert tableName="users">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="email" value="patient@hpms.in"/>
+            <column name="password" value="$2a$10$7QJ3Y7wG5yFQ4c8jYkZ4sO7wPqY6u9YQnXQ8uQx1XyZ1XyZ1XyZ1"/>
+            <column name="role" value="PATIENT"/>
+            <column name="is_active" valueBoolean="true"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>
