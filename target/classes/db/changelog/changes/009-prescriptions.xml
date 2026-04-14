@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="009-create-prescriptions" author="Dev3">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="prescriptions"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="prescriptions">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="patient_id" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_prescription_patient" references="users(id)"/>
+            </column>
+
+            <column name="doctor_id" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_prescription_doctor" references="users(id)"/>
+            </column>
+
+            <column name="appointment_id" type="UUID">
+                <constraints nullable="true" foreignKeyName="fk_prescription_appointment" references="appointments(id)"/>
+            </column>
+
+            <column name="medication_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dosage" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="frequency" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="duration" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="instructions" type="TEXT"/>
+            <column name="is_active" type="BOOLEAN" defaultValueBoolean="true"/>
+            <column name="is_filled" type="BOOLEAN" defaultValueBoolean="false"/>
+            <column name="filled_by" type="UUID"/>
+            <column name="filled_at" type="TIMESTAMP"/>
+
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP"/>
+        </createTable>
+
+        <!-- Indexes -->
+        <createIndex indexName="idx_prescription_patient_active" tableName="prescriptions">
+            <column name="patient_id"/>
+            <column name="is_active"/>
+        </createIndex>
+
+        <createIndex indexName="idx_prescription_appointment" tableName="prescriptions">
+            <column name="appointment_id"/>
+        </createIndex>
+
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,65 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="005-create-doctors" author="Dev2">
+
+        <createTable tableName="doctors">
+
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="user_id" type="UUID">
+                <constraints nullable="false" unique="true"
+                             foreignKeyName="fk_doctor_user"
+                             referencedTableName="users"
+                             referencedColumnNames="id"/>
+            </column>
+
+            <column name="department_id" type="UUID">
+                <constraints nullable="true"
+                             foreignKeyName="fk_doctor_department"
+                             referencedTableName="departments"
+                             referencedColumnNames="id"/>
+            </column>
+
+            <column name="license_no" type="VARCHAR(100)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="first_name" type="VARCHAR(100)"/>
+            <column name="last_name" type="VARCHAR(100)"/>
+            <column name="specialization" type="VARCHAR(200)"/>
+
+            <column name="years_experience" type="INT"/>
+
+            <column name="rating" type="DECIMAL(3,2)"/>
+
+            <column name="bio" type="TEXT"/>
+
+            <column name="active" type="BOOLEAN" defaultValueBoolean="true"/>
+
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP"/>
+
+        </createTable>
+
+        <!-- Indexes -->
+        <createIndex tableName="doctors" indexName="idx_doctor_license">
+            <column name="license_no"/>
+        </createIndex>
+
+        <createIndex tableName="doctors" indexName="idx_doctor_user">
+            <column name="user_id"/>
+        </createIndex>
+
+        <createIndex tableName="doctors" indexName="idx_doctor_department">
+            <column name="department_id"/>
+        </createIndex>
+
+    </changeSet>
+
+</databaseChangeLog>

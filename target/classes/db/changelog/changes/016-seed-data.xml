@@ -1,0 +1,81 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="016-seed-data-v2" author="RajKumar">
+
+        <insert tableName="departments">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="name" value="Cardiology"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="created_at" valueComputed="NOW()"/>
+            <column name="updated_at" valueComputed="NOW()"/>
+        </insert>
+
+        <insert tableName="departments">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="name" value="Neurology"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="created_at" valueComputed="NOW()"/>
+            <column name="updated_at" valueComputed="NOW()"/>
+        </insert>
+
+        <insert tableName="departments">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="name" value="Orthopedics"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="created_at" valueComputed="NOW()"/>
+            <column name="updated_at" valueComputed="NOW()"/>
+        </insert>
+
+        <insert tableName="departments">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="name" value="Pediatrics"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="created_at" valueComputed="NOW()"/>
+            <column name="updated_at" valueComputed="NOW()"/>
+        </insert>
+
+        <insert tableName="departments">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="name" value="General Medicine"/>
+            <column name="active" valueBoolean="true"/>
+            <column name="created_at" valueComputed="NOW()"/>
+            <column name="updated_at" valueComputed="NOW()"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="email" value="admin@hpms.in"/>
+            <column name="password" value="$2a$10$7QJ3Y7wG5yFQ4c8jYkZ4sO7wPqY6u9YQnXQ8uQx1XyZ1XyZ1XyZ1"/>
+            <column name="role" value="ADMIN"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="created_at" valueComputed="NOW()"/>
+            <column name="updated_at" valueComputed="NOW()"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="email" value="doctor@hpms.in"/>
+            <column name="password" value="$2a$10$7QJ3Y7wG5yFQ4c8jYkZ4sO7wPqY6u9YQnXQ8uQx1XyZ1XyZ1XyZ1"/>
+            <column name="role" value="DOCTOR"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="created_at" valueComputed="NOW()"/>
+            <column name="updated_at" valueComputed="NOW()"/>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id" valueComputed="gen_random_uuid()"/>
+            <column name="email" value="patient@hpms.in"/>
+            <column name="password" value="$2a$10$7QJ3Y7wG5yFQ4c8jYkZ4sO7wPqY6u9YQnXQ8uQx1XyZ1XyZ1XyZ1"/>
+            <column name="role" value="PATIENT"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="created_at" valueComputed="NOW()"/>
+            <column name="updated_at" valueComputed="NOW()"/>
+        </insert>
+
+    </changeSet>
+
+</databaseChangeLog>

@@ -9,4 +9,8 @@ public interface EmailService {
     void sendAppointmentReminder(String toEmail, String patientName);
 
     void sendBillReminder(String toEmail, String patientName);
+
+
+
+
 }

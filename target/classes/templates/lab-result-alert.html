@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<h2>Lab Result</h2>
+<p th:if="${critical}">⚠️ Your result is critical. Please consult doctor.</p>
+<p th:if="${!critical}">Your lab result is ready.</p>
+</body>
+</html>

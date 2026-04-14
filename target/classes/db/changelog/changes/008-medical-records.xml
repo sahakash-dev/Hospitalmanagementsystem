@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="008-create-medical-records" author="Dev3">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="medical_records"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="medical_records">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="patient_id" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_medicalrecord_patient" references="users(id)"/>
+            </column>
+
+            <column name="doctor_id" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_medicalrecord_doctor" references="users(id)"/>
+            </column>
+
+            <column name="appointment_id" type="UUID">
+                <constraints nullable="true" unique="true" foreignKeyName="fk_medicalrecord_appointment" references="appointments(id)"/>
+            </column>
+
+            <column name="visit_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="chief_complaint" type="TEXT"/>
+            <column name="diagnosis" type="TEXT"/>
+            <column name="icd10_code" type="VARCHAR(20)"/>
+            <column name="symptoms" type="TEXT"/>
+            <column name="treatment_plan" type="TEXT"/>
+            <column name="follow_up_date" type="DATE"/>
+
+            <column name="weight" type="DOUBLE"/>
+            <column name="height" type="DOUBLE"/>
+            <column name="temperature" type="DOUBLE"/>
+            <column name="blood_pressure" type="VARCHAR(10)"/>
+            <column name="heart_rate" type="INT"/>
+            <column name="spo2" type="INT"/>
+
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP"/>
+        </createTable>
+
+        <!-- Compound index: patient_id + visit_date DESC -->
+        <createIndex indexName="idx_medicalrecord_patient_visitdate" tableName="medical_records" unique="false">
+            <column name="patient_id"/>
+            <column name="visit_date"/>
+        </createIndex>
+
+    </changeSet>
+</databaseChangeLog>

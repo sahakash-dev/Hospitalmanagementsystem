@@ -1,0 +1,79 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="004-create-patients-table" author="arman">
+
+        <!-- Create patients table -->
+        <createTable tableName="patients">
+
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="user_id" type="UUID">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="nhs_id" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="first_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="date_of_birth" type="DATE"/>
+
+            <column name="gender" type="VARCHAR(20)"/>
+
+            <column name="blood_group" type="VARCHAR(20)"/>
+
+            <column name="phone" type="VARCHAR(20)"/>
+
+            <column name="address" type="TEXT"/>
+
+            <column name="emergency_contact" type="TEXT"/>
+
+            <column name="insurance_info" type="TEXT"/>
+
+            <column name="active" type="BOOLEAN" defaultValueBoolean="true"/>
+
+            <column name="created_at" type="TIMESTAMP"/>
+
+            <column name="updated_at" type="TIMESTAMP"/>
+
+        </createTable>
+
+        <!-- Foreign Key: user_id -> users.id -->
+        <addForeignKeyConstraint
+                baseTableName="patients"
+                baseColumnNames="user_id"
+                constraintName="fk_patient_user"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <!-- Indexes -->
+        <createIndex indexName="idx_patients_nhs_id" tableName="patients" unique="true">
+            <column name="nhs_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_patients_user_id" tableName="patients">
+            <column name="user_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_patients_is_active" tableName="patients">
+            <column name="active"/>
+        </createIndex>
+
+    </changeSet>
+
+</databaseChangeLog>
